@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Jankenpo</title>
+    <style>
+      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      .option{
+        border: 1px solid #000;
+        margin: 5 px;
+      }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div>
+      <div>Please click in your option:</div>
+    </div>
+    <div>
+      <input type="button" value="paper" name="paper" class="option" onclick="selectMyOption('paper')" />
+      <input type="button" value="rock" name="rock" class="option" onclick="selectMyOption('rock')" />
+      <input type="button" value="scissors" name="scissors" class="option" onclick="selectMyOption('scissors')" />
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      var socket = io();
+
+      let myOption = "";
+      let otherPlayerOption = "";
+
+      function selectMyOption(option) {
+        myOption = option;
+        socket.emit("submit", option + "-" + myId);
+        play(); 
+      }
+
+      socket.on('other-player-submit', function(message) {
+        id = message.substr(message.indexOf("-") +1)
+        if (id != myId) {
+          otherPlayerOption = message.substr(0, message.indexOf("-"))
+          play();
+        }
+      });
+
+      function play() {
+        console.log("myOption: " + myOption);
+        console.log("otherPlayerOption: " + otherPlayerOption);
+
+        if (myOption == "" || otherPlayerOption == "") {
+          return "";
+        }
+
+        if ((myOption == "paper" && otherPlayerOption == "rock") || (myOption == "rock" && otherPlayerOption == "scissors") || (myOption == "scissors" && otherPlayerOption == "paper")) {
+          alert(`You win. Other player selected ${otherPlayerOption}`);
+        } else if (myOption == otherPlayerOption) {
+          alert(`Draw. Other player selected ${otherPlayerOption}`);
+        } else {
+          alert(`You lost. Other player selected ${otherPlayerOption}`);
+        }
+
+        myOption = "";
+        otherPlayerOption = "";
+      }
+
+      function generateUuidv4() {
+        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+      }
+
+      let myId = generateUuidv4();
+
+    </script>
+  </body>
+</html>
