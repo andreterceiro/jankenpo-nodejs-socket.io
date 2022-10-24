@@ -1,3 +1,2 @@
-# jankenpo-nodejs-socket.io
+https://www.youtube.com/watch?v=kNBK1qbPhHQ
 
-I will finish it when I will have time.
