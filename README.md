@@ -20,3 +20,8 @@ You need to run:
 > node index.js
 ```
 
+And access the app in a browser in the address:
+
+```
+http://localhost:3000
+```
